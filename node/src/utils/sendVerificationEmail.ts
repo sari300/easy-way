@@ -1,4 +1,7 @@
 import nodemailer from 'nodemailer';
+
+const DEFAULT_CLIENT_URL = 'http://localhost:5173';
+
 export const sendVerificationEmail = async (to: string, token: string) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -8,7 +11,8 @@ export const sendVerificationEmail = async (to: string, token: string) => {
     }
   });
 
-  const url = `http://localhost:5173/verify-email/${token}`; // או כתובת production
+  const clientUrl = (process.env.CLIENT_URL || DEFAULT_CLIENT_URL).replace(/\/+$/, '');
+  const url = `${clientUrl}/verify-email/${token}`;
 
   await transporter.sendMail({
     from: `"EasyWay" <${process.env.EMAIL_SENDER}>`,

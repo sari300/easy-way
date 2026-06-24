@@ -16,6 +16,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; 
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 const BLUE_COLOR = '#2C3E50';
 const PINK_COLOR = '#FF6B6B';
@@ -48,7 +49,7 @@ const MyJoinedGroups: React.FC = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Authentication token not found. Please log in.');
 
-        const API_URL = 'http://localhost:8000/api/user/my-joined-groups';
+        const API_URL = apiUrl('/user/my-joined-groups');
         const response = await axios.get(API_URL, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -80,7 +81,7 @@ const MyJoinedGroups: React.FC = () => {
             setActionMessage({ type: 'error', text: 'Your session has expired. Please log in again.' });
             return;
         }
-        const API_URL = `http://localhost:8000/api/rideGroup/${groupId}/leave`;
+        const API_URL = apiUrl(`/rideGroup/${groupId}/leave`);
         await axios.post(
             API_URL, 
             {},

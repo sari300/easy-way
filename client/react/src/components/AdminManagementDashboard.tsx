@@ -23,6 +23,7 @@ import {
   Divider
 } from '@mui/material';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 const PRIMARY_COLOR = '#2C3E50';
 const BACKGROUND_COLOR = '#FFFFFF';
@@ -64,17 +65,17 @@ const AdminManagementDashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         if (view === 'users') {
-          const res = await axios.get('http://localhost:8000/api/admin/users', {
+          const res = await axios.get(apiUrl('/admin/users'), {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUsers(res.data.data || []);
         } else if (view === 'bookings') {
-          const res = await axios.get('http://localhost:8000/api/admin/bookings', {
+          const res = await axios.get(apiUrl('/admin/bookings'), {
             headers: { Authorization: `Bearer ${token}` },
           });
           setBookings(res.data.data || []);
         } else if (view === 'groups') {
-          const res = await axios.get('http://localhost:8000/api/admin/groups', {
+          const res = await axios.get(apiUrl('/admin/groups'), {
             headers: { Authorization: `Bearer ${token}` },
           });
           setGroups(res.data.data || []);

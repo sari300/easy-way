@@ -10,6 +10,7 @@ import {
 
 import RequestCard from './requestCard';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 const PRIMARY_BLUE = '#2C3E50';
 const BACKGROUND_COLOR = '#f7f9fc';
@@ -41,7 +42,7 @@ const PendingRequestsPage: React.FC = () => {
         setLoading(true);
         const token = localStorage.getItem('token');
         const { data } = await axios.get<PendingRequest[]>(
-          'http://localhost:8000/api/booking/driver/pending',
+          apiUrl('/booking/driver/pending'),
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setRequests(data);

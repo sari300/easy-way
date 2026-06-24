@@ -47,7 +47,7 @@
 //         setLoading(true);
 //         try {
 //             const token = localStorage.getItem('token');
-//             const res = await axios.get('http://localhost:8000/api/booking/my-bookings', {
+//             const res = await axios.get(apiUrl('/booking/my-bookings'), {
 //                 headers: { Authorization: `Bearer ${token}` }
 //             });
 //             if (Array.isArray(res.data)) {
@@ -70,7 +70,7 @@
 //     try {
 //       const token = localStorage.getItem('token');
 //       await axios.patch(
-//         `http://localhost:8000/api/booking/${bookingId}/cancel`,
+//         apiUrl(`/booking/${bookingId}/cancel`),
 //         {}, // גוף הבקשה ריק כי המידע נשלח ב-URL
 //         { headers: { Authorization: `Bearer ${token}` } }
 //       );
@@ -201,6 +201,7 @@ import {
   ButtonGroup
 } from '@mui/material';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 // --- שינוי: איחוד פלטת הצבעים עם HomePage ---
 const PRIMARY_COLOR = '#2C3E50';
@@ -236,7 +237,7 @@ const MyBookings: React.FC = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:8000/api/booking/my-bookings', {
+            const res = await axios.get(apiUrl('/booking/my-bookings'), {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (Array.isArray(res.data)) {
@@ -259,7 +260,7 @@ const MyBookings: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
-        `http://localhost:8000/api/booking/${bookingId}/cancel`,
+        apiUrl(`/booking/${bookingId}/cancel`),
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

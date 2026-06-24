@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { RideGroup } from '../types/rideGroup';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 interface RideGroupsState {
   groups: RideGroup[];
@@ -21,7 +22,7 @@ export const fetchRideGroups = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('http://localhost:8000/api/rideGroup/', {
+      const response = await axios.get(apiUrl('/rideGroup/'), {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data as RideGroup[];

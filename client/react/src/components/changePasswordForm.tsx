@@ -8,6 +8,7 @@ import {
     Paper
 } from '@mui/material';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 const ACCENT_COLOR = '#2c3e50';
 
@@ -30,7 +31,7 @@ const ChangePasswordForm: React.FC = () => {
             setLoading(true);
             const token = localStorage.getItem('token');
             await axios.patch(
-                'http://localhost:4000/api/user/change-password',
+                apiUrl('/user/change-password'),
                 { currentPassword, newPassword },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

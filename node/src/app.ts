@@ -10,15 +10,10 @@ import { protect } from './middlewares/authMiddleware';
 import 'express-async-errors';
 import path from 'path';
 import adminRouter from './routes/adminDashboardRoutes';
+import { corsOptions } from './config/corsOptions';
 
 const app = express();
 
-
-const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
-const corsOptions = {
-  origin: allowedOrigins,
-  optionsSuccessStatus: 200
-};
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));

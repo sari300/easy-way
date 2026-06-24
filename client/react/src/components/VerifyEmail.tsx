@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl } from '../utils/api';
 import { Alert, CircularProgress, Container } from '@mui/material';
 
 const VerifyEmail: React.FC = () => {
@@ -10,7 +11,7 @@ const VerifyEmail: React.FC = () => {
     useEffect(() => {
         const verify = async () => {
             try {
-                await axios.get(`http://localhost:8000/api/user/verify-email/${token}`);
+                await axios.get(apiUrl(`/user/verify-email/${token}`));
                 setStatus('success');
                 setTimeout(() => {
                     navigate('/signin');

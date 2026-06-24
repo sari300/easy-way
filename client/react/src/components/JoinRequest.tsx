@@ -18,6 +18,7 @@ import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatRecline
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 const PRIMARY_BLUE = '#2C3E50';
 const PRIMARY_PINK = '#FF6B6B';
@@ -65,7 +66,7 @@ const UserBookings: React.FC = () => {
       setError(null);
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:8000/api/booking/my-bookings`, {
+        const res = await axios.get(apiUrl('/booking/my-bookings'), {
           headers: { Authorization: `Bearer ${token}` },
           params: statusFilter !== 'ALL' ? { status: statusFilter } : {},
         });
@@ -93,7 +94,7 @@ const UserBookings: React.FC = () => {
     setActionError(null);
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:8000/api/booking/${bookingId}/cancel`, {}, {
+      await axios.patch(apiUrl(`/booking/${bookingId}/cancel`), {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBookings((prev) => prev.map(b => b._id === bookingId ? { ...b, status: 'CANCELLED' } : b));

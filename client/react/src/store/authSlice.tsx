@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
-const API_URL = 'http://localhost:8000/api/user/';
+const userApiUrl = (path: string) => apiUrl(`/user/${path}`);
 
 interface AuthState {
   user: any;
@@ -39,7 +40,7 @@ export const login = createAsyncThunk<UserData, { email: string; password: strin
   '/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(API_URL + 'login', credentials);
+      const response = await axios.post(userApiUrl('login'), credentials);
       //keep the token after a good login
       localStorage.setItem('token', response.data.token);
       return response.data; // if succes the answer will go to the reducer
@@ -54,7 +55,7 @@ export const register = createAsyncThunk<UserData, any>(
   '/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(API_URL + 'register', userData);
+      const response = await axios.post(userApiUrl('register'), userData);
       localStorage.setItem('token', response.data.token);
       return response.data;
     } catch (err: any) {

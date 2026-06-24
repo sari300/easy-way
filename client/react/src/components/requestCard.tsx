@@ -14,6 +14,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import ChairIcon from '@mui/icons-material/Chair';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 import type { PendingRequest } from './pendingRequest';
 
@@ -35,7 +36,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onRequestHandled }) 
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
-        `http://localhost:8000/api/booking/${request._id}/status`,
+        apiUrl(`/booking/${request._id}/status`),
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );

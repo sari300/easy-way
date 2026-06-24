@@ -9,6 +9,7 @@ import {
   Box
 } from '@mui/material';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 const CreateGroup: React.FC = () => {
   const [groupName, setGroupName] = useState('');
@@ -71,7 +72,7 @@ const CreateGroup: React.FC = () => {
     }
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:8000/api/rideGroup/', dataToSend, {
+      const response = await axios.post(apiUrl('/rideGroup/'), dataToSend, {
         headers: {
           Authorization: `Bearer ${token}`
         }

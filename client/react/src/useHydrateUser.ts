@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks';
 import axios from 'axios';
 import { setUser } from './store/authSlice';
+import { apiUrl } from './utils/api';
 
 export function useHydrateUser() {
   const dispatch = useAppDispatch();
@@ -10,7 +11,7 @@ export function useHydrateUser() {
 
   useEffect(() => {
     if (token && !user) {
-      axios.get('http://localhost:8000/api/user/me', {
+      axios.get(apiUrl('/user/me'), {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => {

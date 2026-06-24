@@ -47,7 +47,7 @@
 //         const fetchGroups = async () => {
 //             try {
 //                 const token = localStorage.getItem('token');
-//                 const res = await axios.get('http://localhost:8000/api/user/my-groups', {
+//                 const res = await axios.get(apiUrl('/user/my-groups'), {
 //                     headers: { Authorization: `Bearer ${token}` }
 //                 });
                 
@@ -90,7 +90,7 @@
 //         setClosingGroupId(groupId);
 //         try {
 //             const token = localStorage.getItem('token');
-//             const API_URL = `http://localhost:8000/api/rideGroup/${groupId}/close`;
+//             const API_URL = apiUrl(`/rideGroup/${groupId}/close`);
 
 //             await axios.patch(API_URL, {}, { headers: { Authorization: `Bearer ${token}` } });
             
@@ -270,6 +270,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CancelIcon from '@mui/icons-material/Cancel';
 import GroupIcon from '@mui/icons-material/Group';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 // colors
 const PRIMARY_BLUE = '#2C3E50';
@@ -305,7 +306,7 @@ const MyGroups: React.FC = () => {
         const fetchGroups = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await axios.get('http://localhost:8000/api/user/my-groups', {
+                const res = await axios.get(apiUrl('/user/my-groups'), {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 
@@ -359,7 +360,7 @@ const MyGroups: React.FC = () => {
         
         try {
             const token = localStorage.getItem('token');
-            const API_URL = `http://localhost:8000/api/rideGroup/${groupId}/close`;
+            const API_URL = apiUrl(`/rideGroup/${groupId}/close`);
 
             await axios.patch(API_URL, {}, { headers: { Authorization: `Bearer ${token}` } });
             

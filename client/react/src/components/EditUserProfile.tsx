@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 const PRIMARY_COLOR = '#2C3E50';
 const SECONDARY_COLOR = '#ECF0F1';
@@ -23,7 +24,7 @@ const EditProfileForm: React.FC = () => {
         const fetchUser = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await axios.get('http://localhost:8000/api/user/me', {
+                const res = await axios.get(apiUrl('/user/me'), {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setForm({
@@ -45,7 +46,7 @@ const EditProfileForm: React.FC = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            await axios.patch('http://localhost:8000/api/user/me', form, {
+            await axios.patch(apiUrl('/user/me'), form, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage({ type: 'success', text: 'profile update succeeded' });

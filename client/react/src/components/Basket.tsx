@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { apiUrl } from '../utils/api';
 import DirectionsCarRoundedIcon from '@mui/icons-material/DirectionsCarRounded';
 import './Basket.css';
 
@@ -70,7 +71,7 @@ const Basket: React.FC = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const API_URL = 'http://localhost:8000/api/user/my-joined-groups';
+        const API_URL = apiUrl('/user/my-joined-groups');
         const response = await axios.get(API_URL, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -94,7 +95,7 @@ const Basket: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const API_URL = `http://localhost:8000/api/rideGroup/${groupId}/leave`;
+      const API_URL = apiUrl(`/rideGroup/${groupId}/leave`);
       await axios.post(API_URL, {}, { headers: { 'Authorization': `Bearer ${token}` } });
       setJoinedGroups(prev => prev.filter(g => g.groupId._id !== groupId));
     } catch { }

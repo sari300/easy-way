@@ -24,6 +24,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import axios from 'axios';
 import { fetchRideGroups } from '../store/rideGroupSlice';
 import { getErrorMessage } from '../utils/errorMessage';
+import { apiUrl } from '../utils/api';
 
 // Icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -93,7 +94,7 @@ const RideGroupsList: React.FC = () => {
     try {
       setJoiningId(groupId);
       const token = localStorage.getItem('token');
-      const res = await axios.post(`http://localhost:8000/api/booking/`, { rideGroupId: groupId, rideDate: nextRideDate.toISOString(), seatsRequested: 1, pickupLocation: 'To be determined by user' }, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } });
+      const res = await axios.post(apiUrl('/booking/'), { rideGroupId: groupId, rideDate: nextRideDate.toISOString(), seatsRequested: 1, pickupLocation: 'To be determined by user' }, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } });
       if (res.data.status === 'REJECTED') {
         setSnackbar({ open: true, message: 'Request rejected – no available seats', severity: 'warning' });
       } else {

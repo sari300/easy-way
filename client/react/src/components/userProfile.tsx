@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { apiUrl } from '../utils/api';
 import {
   Box,
   Alert,
@@ -27,7 +28,7 @@ const UserProfile: React.FC = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token');
 
-        const res = await axios.get('http://localhost:8000/api/user/me', {
+        const res = await axios.get(apiUrl('/user/me'), {
           headers: { Authorization: `Bearer ${token}` }
         });
 

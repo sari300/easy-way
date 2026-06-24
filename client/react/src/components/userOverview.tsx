@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
+import { apiUrl } from '../utils/api';
 import {
   Typography,
   Avatar,
@@ -32,7 +33,7 @@ const UserOverview: React.FC<UserOverviewProps> = ({ setView }) => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token');
 
-        const res = await axios.get('http://localhost:8000/api/user/me', {
+        const res = await axios.get(apiUrl('/user/me'), {
           headers: { Authorization: `Bearer ${token}` }
         });
 

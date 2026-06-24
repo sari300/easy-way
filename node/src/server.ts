@@ -14,16 +14,11 @@ import 'express-async-errors';
 import path from 'path';
 import adminRouter from './routes/adminDashboardRoutes';
 import { connectDB } from './config/db';
+import { corsOptions } from './config/corsOptions';
 
 // Create Express app
 const app = express();
 
-// CORS configuration
-const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
-const corsOptions = {
-  origin: allowedOrigins,
-  optionsSuccessStatus: 200
-};
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
