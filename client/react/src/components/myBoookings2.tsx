@@ -200,6 +200,7 @@ import {
   Button,
   ButtonGroup
 } from '@mui/material';
+import { getErrorMessage } from '../utils/errorMessage';
 
 // --- שינוי: איחוד פלטת הצבעים עם HomePage ---
 const PRIMARY_COLOR = '#2C3E50';
@@ -226,6 +227,7 @@ const MyBookings: React.FC = () => {
   const [allBookings, setAllBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<BookingStatus | 'ALL'>('ALL');
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
@@ -243,7 +245,7 @@ const MyBookings: React.FC = () => {
                 setError('Received invalid data format from server.');
             }
         } catch (err: any) {
-            setError(err.response?.data?.error?.message || 'Failed to load your bookings.');
+            setError(getErrorMessage(err, 'Failed to load your bookings.'));
         } finally {
             setLoading(false);
         }
@@ -253,6 +255,7 @@ const MyBookings: React.FC = () => {
   
   const handleCancelBooking = async (bookingId: string) => {
     setCancellingId(bookingId);
+    setActionError(null);
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
@@ -267,6 +270,7 @@ const MyBookings: React.FC = () => {
       );
     } catch (err: any) {
       console.error("Failed to cancel booking:", err);
+      setActionError(getErrorMessage(err, 'Failed to cancel the booking. Please try again.'));
     } finally {
       setCancellingId(null);
     }
@@ -313,6 +317,11 @@ const MyBookings: React.FC = () => {
             ))}
           </ButtonGroup>
         </Box>
+        {actionError && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {actionError}
+          </Alert>
+        )}
 
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>

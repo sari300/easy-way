@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 
 import RequestCard from './requestCard';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const PRIMARY_BLUE = '#2C3E50';
 const BACKGROUND_COLOR = '#f7f9fc';
@@ -45,7 +46,7 @@ const PendingRequestsPage: React.FC = () => {
         );
         setRequests(data);
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to fetch pending requests.');
+        setError(getErrorMessage(err, 'Failed to fetch pending requests.'));
       } finally {
         setLoading(false);
       }

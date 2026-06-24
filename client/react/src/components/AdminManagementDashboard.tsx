@@ -22,6 +22,7 @@ import {
   TableRow,
   Divider
 } from '@mui/material';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const PRIMARY_COLOR = '#2C3E50';
 const BACKGROUND_COLOR = '#FFFFFF';
@@ -79,7 +80,7 @@ const AdminManagementDashboard: React.FC = () => {
           setGroups(res.data.data || []);
         }
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to fetch data');
+        setError(getErrorMessage(err, 'Failed to fetch data.'));
       } finally {
         setLoading(false);
       }

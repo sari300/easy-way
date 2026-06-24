@@ -13,6 +13,7 @@ import {
 import PersonIcon from '@mui/icons-material/Person';
 import ChairIcon from '@mui/icons-material/Chair';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { getErrorMessage } from '../utils/errorMessage';
 
 import type { PendingRequest } from './pendingRequest';
 
@@ -40,7 +41,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onRequestHandled }) 
       );
       onRequestHandled(request._id);
     } catch (err: any) {
-      setError(err.response?.data?.message || `Could not ${status.toLowerCase()} the request.`);
+      setError(getErrorMessage(err, `Could not ${status.toLowerCase()} the request.`));
     } finally {
       setIsProcessing(false);
     }

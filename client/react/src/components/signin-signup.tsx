@@ -12,14 +12,16 @@ import {
   Paper,
 } from '@mui/material';
 import { useAppDispatch } from '../hooks/reduxHooks';
-import { login } from '../store/authSlice';
+import { login, register } from '../store/authSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const PRIMARY_COLOR = '#2C3E50';
 const ACCENT_COLOR = '#FF6B6B';
 
 const SigninSignup: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -46,25 +48,30 @@ const SigninSignup: React.FC = () => {
       localStorage.setItem('user', JSON.stringify(user));
       navigate(redirectPath || '/');
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+      setError(getErrorMessage(err, 'Login failed. Please check your email and password.'));
     } finally {
       setLoading(false);
     }
   };
 
-  // Dummy registration handler (replace with your real registration logic)
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!userName.trim()) {
+      setError('Please enter a username.');
+      return;
+    }
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
     setLoading(true);
     try {
-      navigate('/login');
+      const actionResult = await dispatch(register({ email, userName, password }));
+      unwrapResult(actionResult);
+      navigate(redirectPath || '/');
     } catch (err: any) {
-      setError(err.message || 'Registration failed.');
+      setError(getErrorMessage(err, 'Registration failed. Please check the details and try again.'));
     } finally {
       setLoading(false);
     }
@@ -150,8 +157,39 @@ const SigninSignup: React.FC = () => {
                 },
               }
             }}
-
           />
+          {isRegister && (
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="userName"
+              label="Username"
+              name="userName"
+              autoComplete="username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              sx={{
+                '& label': {
+                  color: '#FF6B6B',
+                },
+                '& label.Mui-focused': {
+                  color: '#FF6B6B',
+                },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#FF6B6B',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#FF6B6B',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#FF6B6B',
+                  },
+                }
+              }}
+            />
+          )}
           {isRegister && (
             <TextField
               margin="normal"
@@ -183,7 +221,6 @@ const SigninSignup: React.FC = () => {
                   },
                 }
               }}
-
             />
           )}
           <Button

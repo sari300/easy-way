@@ -13,6 +13,10 @@
   cursor: pointer;
   z-index: 1001;
 }
+.basket-car-icon {
+  color: #FF6B6B;
+  font-size: 30px !important;
+}
 .basket-count {
   position: absolute;
   top: 8px;

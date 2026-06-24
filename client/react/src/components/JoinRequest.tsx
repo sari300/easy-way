@@ -17,6 +17,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const PRIMARY_BLUE = '#2C3E50';
 const PRIMARY_PINK = '#FF6B6B';
@@ -55,6 +56,7 @@ const UserBookings: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<BookingStatus | 'ALL'>('ALL');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -77,7 +79,7 @@ const UserBookings: React.FC = () => {
         }));
         setBookings(formattedData);
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to fetch your bookings.');
+        setError(getErrorMessage(err, 'Failed to fetch your bookings.'));
       } finally {
         setLoading(false);
       }
@@ -88,6 +90,7 @@ const UserBookings: React.FC = () => {
 
   const handleCancel = async (bookingId: string) => {
     setCancellingId(bookingId);
+    setActionError(null);
     try {
       const token = localStorage.getItem('token');
       await axios.patch(`http://localhost:8000/api/booking/${bookingId}/cancel`, {}, {
@@ -96,7 +99,7 @@ const UserBookings: React.FC = () => {
       setBookings((prev) => prev.map(b => b._id === bookingId ? { ...b, status: 'CANCELLED' } : b));
     } catch (err: any) {
       console.error("Failed to cancel booking:", err);
-      // Optional: Show a snackbar error message to the user
+      setActionError(getErrorMessage(err, 'Failed to cancel the request. Please try again.'));
     } finally {
       setCancellingId(null);
     }
@@ -122,7 +125,7 @@ const UserBookings: React.FC = () => {
   };
 
   const renderBookingCard = (booking: Booking) => (
-    <Grid item xs={12} sm={6} md={4} key={booking._id}>
+    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={booking._id}>
       <Paper
         sx={{
           p: 3,
@@ -227,6 +230,11 @@ const UserBookings: React.FC = () => {
             />
         ))}
       </Box>
+      {actionError && (
+        <Alert severity="error" sx={{ borderRadius: 2, mb: 3 }}>
+          {actionError}
+        </Alert>
+      )}
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
@@ -239,7 +247,7 @@ const UserBookings: React.FC = () => {
           {bookings.length > 0 ? (
             bookings.map(renderBookingCard)
           ) : (
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
                 <Alert severity="info" sx={{ borderRadius: 2, mt: 2 }}>
                     You have no ride requests with the selected status.
                 </Alert>

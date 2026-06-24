@@ -41,7 +41,7 @@ const AllGroupsOverview: React.FC = () => {
           <Grid container spacing={3}>
             {groups && groups.length > 0 ? groups.map((group: any) => (
               // grid for the group card
-              <Grid item xs={12} sm={6} md={4} key={group._id}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={group._id}>
                 <Paper elevation={2} sx={{ p: 2.5, borderRadius: 4, display: 'flex', flexDirection: 'column', height: '100%', gap: 1.5, transition: 'box-shadow 0.3s', '&:hover': { boxShadow: '0 4px 12px rgba(44,62,80,0.1)' } }}>
                   {group.groupImageURL && (
                     <Box sx={{ mb: 1, textAlign: 'center' }}>
@@ -74,7 +74,7 @@ const AllGroupsOverview: React.FC = () => {
                 </Paper>
               </Grid>
             )) : (
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                     <Alert severity="info">No ride groups have been created yet. Be the first!</Alert>
                 </Grid>
             )}

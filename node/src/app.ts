@@ -14,8 +14,9 @@ import adminRouter from './routes/adminDashboardRoutes';
 const app = express();
 
 
+const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
 const corsOptions = {
-  origin: 'http://localhost:5173', // או 3001, 5173, וכו'
+  origin: allowedOrigins,
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));

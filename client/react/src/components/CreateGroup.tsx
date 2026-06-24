@@ -8,6 +8,7 @@ import {
   Alert,
   Box
 } from '@mui/material';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const CreateGroup: React.FC = () => {
   const [groupName, setGroupName] = useState('');
@@ -17,6 +18,7 @@ const CreateGroup: React.FC = () => {
   const [returnTime, setReturnTime] = useState('');
   const [days, setDays] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [capacityTotal, setCapacityTotal] = useState<number>(4);
   const [estimatedDuration, setEstimatedDuration] = useState<number>(60);
   const [carImage, setCarImage] = useState<File | null>(null);
@@ -37,20 +39,22 @@ const CreateGroup: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setSuccess(false);
     if (days.length === 0) {
-      alert('Please select at least one day for the ride.');
+      setError('Please select at least one day for the ride.');
       return;
     }
     if (!groupName) {
-      alert('Please enter a group name.');
+      setError('Please enter a group name.');
       return;
     }
     if (!capacityTotal || capacityTotal < 1 || capacityTotal > 20) {
-      alert('Capacity must be between 1 and 20.');
+      setError('Capacity must be between 1 and 20.');
       return;
     }
     if (!estimatedDuration || estimatedDuration < 1 || estimatedDuration > 300) {
-      alert('Estimated duration must be between 1 and 300 minutes.');
+      setError('Estimated duration must be between 1 and 300 minutes.');
       return;
     }
     const dataToSend = new FormData();
@@ -89,7 +93,7 @@ const CreateGroup: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
-      alert('Error creating group');
+      setError(getErrorMessage(err, 'Error creating group. Please review the details and try again.'));
     }
   };
 
@@ -102,6 +106,11 @@ const CreateGroup: React.FC = () => {
       {success && (
         <Alert severity="success" sx={{ mb: 2 }}>
           Group created successfully!
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
         </Alert>
       )}
 

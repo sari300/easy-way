@@ -7,6 +7,7 @@ import {
     Typography,
     Paper
 } from '@mui/material';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const ACCENT_COLOR = '#2c3e50';
 
@@ -39,7 +40,7 @@ const ChangePasswordForm: React.FC = () => {
             setNewPassword('');
             setConfirmPassword('');
         } catch (err: any) {
-            setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to update password.' });
+            setMessage({ type: 'error', text: getErrorMessage(err, 'Failed to update password.') });
         } finally {
             setLoading(false);
         }

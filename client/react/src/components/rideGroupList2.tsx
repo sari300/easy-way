@@ -23,6 +23,7 @@ import type { AlertColor } from '@mui/material/Alert';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import axios from 'axios';
 import { fetchRideGroups } from '../store/rideGroupSlice';
+import { getErrorMessage } from '../utils/errorMessage';
 
 // Icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -37,6 +38,17 @@ const BACKGROUND_COLOR = '#F8FAFC';
 const BORDER_COLOR = '#E2E8F0';
 const SUCCESS_COLOR = '#10B981';
 const TEXT_PRIMARY_COLOR = '#2C3E50';
+
+const filterFieldSx = {
+  '& label': { color: ACCENT_COLOR },
+  '& label.Mui-focused': { color: ACCENT_COLOR },
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '12px',
+    '& fieldset': { borderColor: ACCENT_COLOR },
+    '&:hover fieldset': { borderColor: ACCENT_COLOR },
+    '&.Mui-focused fieldset': { borderColor: ACCENT_COLOR },
+  },
+};
 
 
 const calculateNextRideDate = (days: string[]): Date | null => {
@@ -88,7 +100,7 @@ const RideGroupsList: React.FC = () => {
         setSnackbar({ open: true, message: 'Join request sent and pending approval.', severity: 'info' });
       }
     } catch (err: any) {
-      setSnackbar({ open: true, message: err.response?.data?.error?.message || 'Error in join request', severity: 'error' });
+      setSnackbar({ open: true, message: getErrorMessage(err, 'Error in join request. Please try again.'), severity: 'error' });
     } finally {
       setJoiningId(null);
     }
@@ -133,17 +145,18 @@ const RideGroupsList: React.FC = () => {
         <Paper
           elevation={0}
           sx={{
-            p: 3,
-            borderRadius: '20px',
-            mb: 5,
+            p: showFilters ? 3 : { xs: 1.25, sm: 1.5 },
+            borderRadius: showFilters ? '20px' : '14px',
+            mb: showFilters ? 5 : 3,
             border: `1px solid ${BORDER_COLOR}`,
             background: '#FFFFFF',
+            transition: 'padding 0.2s ease, margin-bottom 0.2s ease, border-radius 0.2s ease',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <FilterListIcon sx={{ color: PRIMARY_COLOR }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: TEXT_PRIMARY_COLOR }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1.5, mb: showFilters ? 3 : 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, minWidth: 0 }}>
+              <FilterListIcon sx={{ color: PRIMARY_COLOR, fontSize: 20 }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, color: TEXT_PRIMARY_COLOR }}>
                 Filter & Search
               </Typography>
               {hasActiveFilters && (
@@ -155,19 +168,33 @@ const RideGroupsList: React.FC = () => {
               )}
             </Box>
             <Button
-              variant="text"
-              startIcon={showFilters ? <ClearIcon /> : <SearchIcon />}
+              variant={showFilters ? 'text' : 'outlined'}
+              size="small"
+              startIcon={showFilters ? <ClearIcon fontSize="small" /> : <SearchIcon fontSize="small" />}
               onClick={() => setShowFilters(!showFilters)}
-              sx={{ color: PRIMARY_COLOR, fontWeight: 600, textTransform: 'none' }}
+              sx={{
+                color: PRIMARY_COLOR,
+                borderColor: BORDER_COLOR,
+                fontWeight: 600,
+                textTransform: 'none',
+                borderRadius: '999px',
+                px: 1.5,
+                py: 0.5,
+                whiteSpace: 'nowrap',
+                '&:hover': {
+                  borderColor: PRIMARY_COLOR,
+                  backgroundColor: 'rgba(44, 62, 80, 0.04)',
+                },
+              }}
             >
-              {showFilters ? 'Hide' : 'Show'} Filters
+              {showFilters ? 'Hide' : 'Filters'}
             </Button>
           </Box>
 
           <Fade in={showFilters}>
             <Box sx={{ display: showFilters ? 'block' : 'none' }}>
               <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={6} md>
+                <Grid size={{ xs: 12, sm: 6, md: 'grow' }}>
                   <TextField
                     fullWidth
                     label="From (Origin)"
@@ -181,10 +208,10 @@ const RideGroupsList: React.FC = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ '& label': { color: '#FF6B6B' }, '& label.Mui-focused': { color: '#FF6B6B' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#FF6B6B' }, '&:hover fieldset': { borderColor: '#FF6B6B' }, '&.Mui-focused fieldset': { borderColor: '#FF6B6B' } } }}
+                    sx={filterFieldSx}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md>
+                <Grid size={{ xs: 12, sm: 6, md: 'grow' }}>
                   <TextField
                     fullWidth
                     label="To (Destination)"
@@ -198,17 +225,17 @@ const RideGroupsList: React.FC = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ '& label': { color: '#FF6B6B' }, '& label.Mui-focused': { color: '#FF6B6B' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#FF6B6B' }, '&:hover fieldset': { borderColor: '#FF6B6B' }, '&.Mui-focused fieldset': { borderColor: '#FF6B6B' } } }}
+                    sx={filterFieldSx}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md>
-                  <FormControl fullWidth variant="outlined">
-                    <InputLabel>Day</InputLabel>
+                <Grid size={{ xs: 12, sm: 6, md: 'grow' }}>
+                  <FormControl fullWidth variant="outlined" sx={filterFieldSx}>
+                    <InputLabel id="day-filter-label">Day</InputLabel>
                     <Select
+                      labelId="day-filter-label"
                       label="Day"
                       value={filters.day}
                       onChange={(e) => setFilters({ ...filters, day: e.target.value })}
-                      sx={{ borderRadius: '12px', '& label': { color: '#FF6B6B' }, '& label.Mui-focused': { color: '#FF6B6B' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#FF6B6B' }, '&:hover fieldset': { borderColor: '#FF6B6B' }, '&.Mui-focused fieldset': { borderColor: '#FF6B6B' } } }}
                     >
                       <MenuItem value="">All Days</MenuItem>
                       <MenuItem value="Sunday">Sunday</MenuItem>
@@ -219,7 +246,7 @@ const RideGroupsList: React.FC = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={6} sm={3} md>
+                <Grid size={{ xs: 6, sm: 3, md: 'grow' }}>
                   <TextField
                     fullWidth
                     type="number"
@@ -228,10 +255,10 @@ const RideGroupsList: React.FC = () => {
                     value={filters.departureFrom}
                     onChange={(e) => setFilters({ ...filters, departureFrom: e.target.value })}
                     inputProps={{ min: 0, max: 23 }}
-                    sx={{ '& label': { color: '#FF6B6B' }, '& label.Mui-focused': { color: '#FF6B6B' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#FF6B6B' }, '&:hover fieldset': { borderColor: '#FF6B6B' }, '&.Mui-focused fieldset': { borderColor: '#FF6B6B' } } }}
+                    sx={filterFieldSx}
                   />
                 </Grid>
-                <Grid item xs={6} sm={3} md>
+                <Grid size={{ xs: 6, sm: 3, md: 'grow' }}>
                   <TextField
                     fullWidth
                     type="number"
@@ -240,7 +267,7 @@ const RideGroupsList: React.FC = () => {
                     value={filters.departureTo}
                     onChange={(e) => setFilters({ ...filters, departureTo: e.target.value })}
                     inputProps={{ min: 0, max: 23 }}
-                    sx={{ '& label': { color: '#FF6B6B' }, '& label.Mui-focused': { color: '#FF6B6B' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#FF6B6B' }, '&:hover fieldset': { borderColor: '#FF6B6B' }, '&.Mui-focused fieldset': { borderColor: '#FF6B6B' } } }}
+                    sx={filterFieldSx}
                   />
                 </Grid>
               </Grid>
@@ -280,7 +307,7 @@ const RideGroupsList: React.FC = () => {
         ) : (
           <Grid container spacing={3}>
             {filteredGroups.length > 0 ? filteredGroups.map((group: any) => (
-              <Grid item xs={12} sm={6} md={4} key={group._id}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={group._id}>
                 <Paper elevation={3} sx={{ p: 2.5, borderRadius: 4, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', gap: 2 }}>
                   {group.groupImageURL && (
                     <Box sx={{ mb: 2, textAlign: 'center' }}>
@@ -324,7 +351,7 @@ const RideGroupsList: React.FC = () => {
                 </Paper>
               </Grid>
             )) : (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Alert severity="info">No ride groups match your filters. Try broadening your search!</Alert>
               </Grid>
             )}

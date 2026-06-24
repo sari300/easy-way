@@ -15,6 +15,7 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; 
+import { getErrorMessage } from '../utils/errorMessage';
 
 const BLUE_COLOR = '#2C3E50';
 const PINK_COLOR = '#FF6B6B';
@@ -38,6 +39,7 @@ const MyJoinedGroups: React.FC = () => {
   const [joinedGroups, setJoinedGroups] = useState<JoinedGroupData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [leavingGroupId, setLeavingGroupId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -61,8 +63,7 @@ const MyJoinedGroups: React.FC = () => {
 
         setJoinedGroups(formattedData);
       } catch (err: any) {
-        const errorMessage = err.response?.data?.message || err.message || 'An unexpected error occurred.';
-        setError(errorMessage);
+        setError(getErrorMessage(err, 'Could not load the groups you joined.'));
       } finally {
         setIsLoading(false);
       }
@@ -72,10 +73,11 @@ const MyJoinedGroups: React.FC = () => {
 //function leave a group  
   const handleLeaveGroup = async (groupId: string) => {
     setLeavingGroupId(groupId); 
+    setActionMessage(null);
     try {
         const token = localStorage.getItem('token');
         if (!token) {
-            alert('Your session has expired. Please log in again.');
+            setActionMessage({ type: 'error', text: 'Your session has expired. Please log in again.' });
             return;
         }
         const API_URL = `http://localhost:8000/api/rideGroup/${groupId}/leave`;
@@ -87,10 +89,10 @@ const MyJoinedGroups: React.FC = () => {
 
         //update the local state to remove the group from the view without needing to reload the page
         setJoinedGroups(prevGroups => prevGroups.filter(g => g.groupId._id !== groupId));
+        setActionMessage({ type: 'success', text: 'You left the group successfully.' });
 
     } catch (err: any) {
-        const errorMessage = err.response?.data?.error || 'Failed to leave the group. Please try again.';
-        alert(errorMessage); 
+        setActionMessage({ type: 'error', text: getErrorMessage(err, 'Failed to leave the group. Please try again.') });
     } finally {
         setLeavingGroupId(null);
     }
@@ -173,6 +175,11 @@ const MyJoinedGroups: React.FC = () => {
         <Typography variant="h4" fontWeight={700} color={BLUE_COLOR} gutterBottom sx={{ textAlign: 'center', mb: 4, pb: 2, borderBottom: '1px solid #e0e0e0' }}>
             Groups I've Joined
         </Typography>
+        {actionMessage && (
+            <Alert severity={actionMessage.type} sx={{ mb: 3, borderRadius: 2, boxShadow: 1 }}>
+                {actionMessage.text}
+            </Alert>
+        )}
 
         {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
@@ -185,7 +192,7 @@ const MyJoinedGroups: React.FC = () => {
         ) : (
             <Grid container spacing={3}>
                 {joinedGroups.map((group) => (
-                    <Grid item key={group._id} xs={12} sm={6} md={4}>
+                    <Grid key={group._id} size={{ xs: 12, sm: 6, md: 4 }}>
                         {renderJoinedGroupCard(group)}
                     </Grid>
                 ))}

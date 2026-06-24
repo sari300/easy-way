@@ -16,7 +16,6 @@ import AllGroupsOverview from './components/DashboardHome'
 import MyJoinedGroups from './components/myJoinedGroups'
 import Basket from './components/Basket'
 import AdminManagementDashboard from './components/AdminManagementDashboard'
-import LoginPage from './components/LoginPage'
 import HomePage from './components/HomePage'
 
 
@@ -30,7 +29,7 @@ function App() {
         <Basket />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="//signin-signup" element={<LoginPage />} />
+          <Route path="/signin-signup" element={<SigninSignup />} />
           <Route path="/signin" element={<SigninSignup />} />
           <Route path="/register" element={<SigninSignup />} />
           <Route path="/profile" element={<UserProfile />} />

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const API_URL = 'http://localhost:8000/api/user/';
 
@@ -43,7 +44,7 @@ export const login = createAsyncThunk<UserData, { email: string; password: strin
       localStorage.setItem('token', response.data.token);
       return response.data; // if succes the answer will go to the reducer
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Login Failed';
+      const errorMessage = getErrorMessage(err, 'Login failed. Please check your email and password.');
       return rejectWithValue(errorMessage);
     }
   }
@@ -57,7 +58,7 @@ export const register = createAsyncThunk<UserData, any>(
       localStorage.setItem('token', response.data.token);
       return response.data;
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Registration Failed';
+      const errorMessage = getErrorMessage(err, 'Registration failed. Please check the details and try again.');
       return rejectWithValue(errorMessage);
     }
   }
@@ -103,6 +104,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.token = action.payload.token;
+        localStorage.setItem('user', JSON.stringify(action.payload));
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;

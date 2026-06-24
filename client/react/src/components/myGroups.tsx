@@ -269,6 +269,7 @@ import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CancelIcon from '@mui/icons-material/Cancel';
 import GroupIcon from '@mui/icons-material/Group';
+import { getErrorMessage } from '../utils/errorMessage';
 
 // colors
 const PRIMARY_BLUE = '#2C3E50';
@@ -293,6 +294,7 @@ const MyGroups: React.FC = () => {
     const [groups, setGroups] = useState<RideGroup[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [closingGroupId, setClosingGroupId] = useState<string | null>(null);
 
     // NEW STATE: For managing the confirmation dialog
@@ -321,7 +323,7 @@ const MyGroups: React.FC = () => {
 
             } catch (err: any) {
                 console.error("Failed to fetch groups:", err);
-                setError('Error loading your groups. Please try again later.');
+                setError(getErrorMessage(err, 'Error loading your groups. Please try again later.'));
             } finally {
                 setLoading(false);
             }
@@ -345,13 +347,14 @@ const MyGroups: React.FC = () => {
     // UPDATED: This function is now called when the user confirms in the dialog
     const handleConfirmCloseGroup = async () => {
         if (!groupToClose) {
-            alert("An internal error occurred. Please refresh the page.");
+            setActionMessage({ type: 'error', text: 'Could not identify the group. Please refresh the page and try again.' });
             return;
         }
 
         const groupId = groupToClose._id;
         
         setClosingGroupId(groupId);
+        setActionMessage(null);
         handleCloseConfirmDialog(); // Close the dialog
         
         try {
@@ -365,10 +368,10 @@ const MyGroups: React.FC = () => {
                     group._id === groupId ? { ...group, isActive: false } : group
                 )
             );
+            setActionMessage({ type: 'success', text: `Group "${groupToClose.groupName}" was closed successfully.` });
 
         } catch (err: any) {
-            const errorMessage = err.response?.data?.error || 'Failed to close the group.';
-            alert(errorMessage);
+            setActionMessage({ type: 'error', text: getErrorMessage(err, 'Failed to close the group.') });
         } finally {
             setClosingGroupId(null);
         }
@@ -475,6 +478,11 @@ const MyGroups: React.FC = () => {
             <Typography variant="h4" fontWeight={700} color={PRIMARY_BLUE} gutterBottom sx={{ textAlign: 'center', mb: 4, pb: 2, borderBottom: '1px solid #e0e0e0' }}>
                 Groups I Manage
             </Typography>
+            {actionMessage && (
+                <Alert severity={actionMessage.type} sx={{ mb: 3, borderRadius: 2 }}>
+                    {actionMessage.text}
+                </Alert>
+            )}
 
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
@@ -487,7 +495,7 @@ const MyGroups: React.FC = () => {
             ) : (
                 <Grid container spacing={3}>
                     {groups.map((group) => (
-                        <Grid item key={group._id} xs={12} sm={6} md={4}>
+                        <Grid key={group._id} size={{ xs: 12, sm: 6, md: 4 }}>
                             {renderGroupCard(group)}
                         </Grid>
                     ))}

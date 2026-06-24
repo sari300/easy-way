@@ -9,6 +9,7 @@ import {
     Stack
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const PRIMARY_COLOR = '#2C3E50';
 const SECONDARY_COLOR = '#ECF0F1';
@@ -30,7 +31,7 @@ const EditProfileForm: React.FC = () => {
                     email: res.data.email || ''
                 });
             } catch (err) {
-                setMessage({ type: 'error', text: 'download user details failed' });
+                setMessage({ type: 'error', text: getErrorMessage(err, 'Could not load your profile details.') });
             }
         };
         fetchUser();
@@ -50,7 +51,7 @@ const EditProfileForm: React.FC = () => {
             setMessage({ type: 'success', text: 'profile update succeeded' });
             setTimeout(() => navigate('/profile'), 2000);
         } catch (err) {
-            setMessage({ type: 'error', text: 'update failed' });
+            setMessage({ type: 'error', text: getErrorMessage(err, 'Could not update your profile. Please check the details and try again.') });
         }
     };
 

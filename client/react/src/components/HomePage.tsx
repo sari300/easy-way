@@ -16,6 +16,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import easyWayLogo from '../assets/easy-way-logo.png';
 
 // Color palette
 const theme = {
@@ -106,7 +107,7 @@ const HomePage: React.FC = () => {
                         <Box sx={{ position: 'relative', zIndex: 1 }}>
                             <Box
                                 component="img"
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Blue_Glass_Arrow.svg/2560px-Blue_Glass_Arrow.svg.png"
+                                src={easyWayLogo}
                                 alt="EasyWay Logo"
                                 sx={{
                                     width: 'auto',
@@ -233,7 +234,7 @@ const HomePage: React.FC = () => {
                     </Typography>
                     <Grid container spacing={3} justifyContent="center">
                         {benefits.map((benefit, index) => (
-                            <Grid item xs={12} sm={6} md={3} key={index}>
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                                 <Grow in timeout={1000 + index * 200}>
                                     <Box
                                         sx={{
@@ -307,7 +308,7 @@ const HomePage: React.FC = () => {
                     
                     <Grid container spacing={4}>
                         {features.map((feature, index) => (
-                            <Grid item xs={12} md={4} key={index}>
+                            <Grid size={{ xs: 12, md: 4 }} key={index}>
                                 <Grow in timeout={1200 + index * 300}>
                                     <Card
                                         elevation={0}

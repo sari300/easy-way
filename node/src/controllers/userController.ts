@@ -36,9 +36,20 @@ export const registerUser = async (req: Request, res: Response) => {
     const userString :string = user._id as string;
     // שליחת מייל אימות
     const emailToken = createEmailToken(userString);
-    await sendVerificationEmail(user.email, emailToken);
+    let emailWarning: string | undefined;
+    try {
+      await sendVerificationEmail(user.email, emailToken);
+    } catch (emailErr: any) {
+      console.error('Verification email failed:', emailErr?.message || emailErr);
+      emailWarning = 'Account created, but verification email could not be sent';
+    }
 
-    return res.status(201).json({ token, user, message: 'Check your email to verify your account' });
+    return res.status(201).json({
+      token,
+      user,
+      message: emailWarning || 'Check your email to verify your account',
+      emailWarning,
+    });
   } catch (err: any) {
     return res.status(400).json({ error: { message: err.message } });
   }

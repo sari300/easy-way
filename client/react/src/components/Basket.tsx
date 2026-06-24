@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import DirectionsCarRoundedIcon from '@mui/icons-material/DirectionsCarRounded';
 import './Basket.css';
 
 function useAuthStatus(setIsLoggedIn: (v: boolean) => void) {
@@ -106,7 +107,7 @@ const Basket: React.FC = () => {
     <>
     {/*button to open the sidebar*/}
       <div className="basket-icon" onClick={() => setOpen(!open)}>
-        <span role="img" aria-label="basket">🚐</span>
+        <DirectionsCarRoundedIcon className="basket-car-icon" aria-label="joined groups" />
         {joinedGroups.length > 0 && <span className="basket-count">{joinedGroups.length}</span>}
       </div>
           

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { RideGroup } from '../types/rideGroup';
+import { getErrorMessage } from '../utils/errorMessage';
 
 interface RideGroupsState {
   groups: RideGroup[];
@@ -17,12 +18,16 @@ const initialState: RideGroupsState = {
 
 export const fetchRideGroups = createAsyncThunk(
   'rideGroups/fetch',
-  async () => {
+  async (_, { rejectWithValue }) => {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:8000/api/rideGroup/', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data as RideGroup[];
+    try {
+      const response = await axios.get('http://localhost:8000/api/rideGroup/', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data as RideGroup[];
+    } catch (err) {
+      return rejectWithValue(getErrorMessage(err, 'Error loading groups.'));
+    }
   }
 );
 
@@ -34,6 +39,7 @@ const rideGroupsSlice = createSlice({
     builder
       .addCase(fetchRideGroups.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchRideGroups.fulfilled, (state, action) => {
         state.loading = false;
@@ -41,7 +47,7 @@ const rideGroupsSlice = createSlice({
       })
       .addCase(fetchRideGroups.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Error loading groups';
+        state.error = (action.payload as string) || action.error.message || 'Error loading groups.';
       });
   },
 });
