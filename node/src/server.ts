@@ -24,6 +24,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Routes
+app.get('/api/status', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/user', userRoutes);
 app.use('/api/rideGroup', rideGroupRoutes);
 app.use('/api/booking', bookingRoutes);
